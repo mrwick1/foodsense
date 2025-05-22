@@ -170,102 +170,100 @@ Date: ${new Date().toLocaleDateString()}
   const servingRatio = servings / 4; // Assuming base recipe is for 4 servings
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Breadcrumb */}
-      <nav className="mb-6">
-        <ol className="flex items-center space-x-2 text-sm text-gray-500">
-          <li>
-            <Link to="/" className="hover:text-gray-900 transition-colors flex items-center">
-              <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-              <span>Recipes</span>
-            </Link>
-          </li>
-          <li>
-            <span className="text-gray-400">/</span>
-          </li>
-          <li className="font-medium text-gray-900 truncate">{recipe.name}</li>
-        </ol>
-      </nav>
-
-      {/* Two-column layout for the main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Left Column - Image and basic info */}
-        <div>
-          {/* Hero Image */}
-          <div className="rounded-lg overflow-hidden h-[450px] relative mb-8">
-            <img 
-              src={recipe.image} 
-              alt={recipe.name}
-              className="w-full h-full object-cover"
-            />
+    <div className="bg-gray-50 min-h-screen pt-8">
+      {/* Hero Section */}
+      <div className="relative w-full h-[340px] md:h-[420px] lg:h-[480px] overflow-hidden mb-10">
+        <img 
+          src={recipe.image} 
+          alt={recipe.name}
+          className="w-full h-full object-cover object-center rounded-lg"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-lg" />
+        <div className="absolute left-0 bottom-0 p-8 w-full flex flex-col md:flex-row md:items-end md:justify-between">
+          <div>
             {recipe.tags.length > 0 && (
-              <div className="absolute bottom-4 left-4">
-                <span className="bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full">
+              <div className="mb-4">
+                <span className="bg-white/80 text-gray-900 text-xs px-3 py-1.5 rounded-full shadow-sm font-medium">
                   {recipe.tags[0]}
                 </span>
               </div>
             )}
+            <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow mb-2">{recipe.name}</h1>
+            <p className="text-white/90 text-lg max-w-2xl drop-shadow mb-4">{recipe.description}</p>
           </div>
-
-          {/* Recipe Header */}
-          <div className="mb-8">
-            <div className="flex items-start justify-between mb-4">
-              <h1 className="text-3xl font-bold text-gray-900 mb-3">{recipe.name}</h1>
-              <div className="flex space-x-2">
-                <button 
-                  onClick={toggleBookmark}
-                  className={`p-2 rounded-full transition-all ${
-                    isBookmarked 
-                      ? 'bg-gray-100 text-gray-900' 
-                      : 'text-gray-400 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
-                  title={isBookmarked ? "Remove from Recipe Book" : "Add to Recipe Book"}
-                >
-                  {isBookmarked ? (
-                    <BookmarkCheck className="w-5 h-5" />
-                  ) : (
-                    <Bookmark className="w-5 h-5" />
-                  )}
-                </button>
-                <button 
-                  onClick={(e) => handleDownload(e)}
-                  className={`p-2 rounded-full transition-all ${
-                    isPremium 
-                      ? 'hover:bg-gray-100 text-gray-700' 
-                      : 'text-gray-300 cursor-not-allowed'
-                  }`}
-                  title={isPremium ? "Download Recipe" : "Upgrade to Download Recipe"}
-                  disabled={!isPremium}
-                >
-                  <Download className="w-5 h-5" />
-                </button>
-                <button 
-                  onClick={(e) => handleDownload(e, true)}
-                  className={`p-2 rounded-full transition-all ${
-                    isPremium 
-                      ? 'hover:bg-gray-100 text-gray-700' 
-                      : 'text-gray-300 cursor-not-allowed'
-                  }`}
-                  title={isPremium ? "Download All Recipes" : "Upgrade to Download All Recipes"}
-                  disabled={!isPremium}
-                >
-                  <FileDown className="w-5 h-5" />
-                </button>
-                <Link 
-                  to={`/recipe/${recipe.id}/edit`}
-                  className="p-2 rounded-full hover:bg-gray-100 transition-all text-gray-700"
-                  title="Edit My Version"
-                >
-                  <PenLine className="w-5 h-5" />
-                </Link>
-              </div>
-            </div>
-            <p className="text-gray-600 leading-relaxed">{recipe.description}</p>
+          <div className="flex space-x-2 mt-4 md:mt-0">
+            <button 
+              onClick={toggleBookmark}
+              className={`p-2 rounded-full transition-all ${
+                isBookmarked 
+                  ? 'bg-white/90 text-gray-900' 
+                  : 'text-white hover:bg-white/20 hover:text-white'
+              }`}
+              title={isBookmarked ? "Remove from Recipe Book" : "Add to Recipe Book"}
+            >
+              {isBookmarked ? (
+                <BookmarkCheck className="w-5 h-5" />
+              ) : (
+                <Bookmark className="w-5 h-5" />
+              )}
+            </button>
+            <button 
+              onClick={(e) => handleDownload(e)}
+              className={`p-2 rounded-full transition-all ${
+                isPremium 
+                  ? 'bg-white/90 text-gray-900' 
+                  : 'text-white/70 cursor-not-allowed'
+              }`}
+              title={isPremium ? "Download Recipe" : "Upgrade to Download Recipe"}
+              disabled={!isPremium}
+            >
+              <Download className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={(e) => handleDownload(e, true)}
+              className={`p-2 rounded-full transition-all ${
+                isPremium 
+                  ? 'bg-white/90 text-gray-900' 
+                  : 'text-white/70 cursor-not-allowed'
+              }`}
+              title={isPremium ? "Download All Recipes" : "Upgrade to Download All Recipes"}
+              disabled={!isPremium}
+            >
+              <FileDown className="w-5 h-5" />
+            </button>
+            <Link 
+              to={`/recipe/${recipe.id}/edit`}
+              className="p-2 rounded-full hover:bg-white/20 transition-all text-white"
+              title="Edit My Version"
+            >
+              <PenLine className="w-5 h-5" />
+            </Link>
           </div>
+        </div>
+      </div>
 
-          {/* Recipe Info Cards */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-gray-50 p-4 rounded-lg flex items-center group">
+      {/* Main Content Layout */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-10">
+        {/* Sticky Sidebar (Ingredients & Nutrition) */}
+        <aside className="lg:w-1/3 w-full flex-shrink-0 mb-10 lg:mb-0 lg:sticky lg:top-24 self-start">
+          <div className="bg-white rounded-2xl shadow p-6 mb-6">
+            <IngredientsList 
+              ingredients={recipe.ingredients} 
+              servingRatio={servingRatio}
+              checkedIngredients={checkedIngredients}
+              onToggleCheck={toggleIngredientCheck}
+            />
+          </div>
+          <div className="bg-white rounded-2xl shadow p-6">
+            <NutritionInfo nutrients={recipe.nutrients} servingRatio={servingRatio} />
+          </div>
+        </aside>
+
+        {/* Main Section (Steps, Info, etc.) */}
+        <section className="flex-1 min-w-0">
+          {/* Info Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="bg-gray-50 p-4 rounded-xl flex items-center group">
               <div className="bg-white rounded-full p-2.5 mr-4 text-gray-500 border border-gray-100 shadow-sm">
                 <Clock className="w-5 h-5" />
               </div>
@@ -274,7 +272,7 @@ Date: ${new Date().toLocaleDateString()}
                 <p className="font-semibold text-gray-900">{recipe.prepTime} min</p>
               </div>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg flex items-center group">
+            <div className="bg-gray-50 p-4 rounded-xl flex items-center group">
               <div className="bg-white rounded-full p-2.5 mr-4 text-gray-500 border border-gray-100 shadow-sm">
                 <ChefHat className="w-5 h-5" />
               </div>
@@ -283,7 +281,7 @@ Date: ${new Date().toLocaleDateString()}
                 <p className="font-semibold text-gray-900">{recipe.cookTime} min</p>
               </div>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg flex items-center justify-between group">
+            <div className="bg-gray-50 p-4 rounded-xl flex items-center justify-between group">
               <div className="flex items-center">
                 <div className="bg-white rounded-full p-2.5 mr-4 text-gray-500 border border-gray-100 shadow-sm">
                   <Egg className="w-5 h-5" />
@@ -315,52 +313,32 @@ Date: ${new Date().toLocaleDateString()}
             </div>
           </div>
 
-          {/* Ingredients List */}
-          <IngredientsList 
-            ingredients={recipe.ingredients} 
-            servingRatio={servingRatio}
-            checkedIngredients={checkedIngredients}
-            onToggleCheck={toggleIngredientCheck}
-          />
-        </div>
-
-        {/* Right Column - Preparation and Nutrition */}
-        <div>
-          {/* Preparation */}
-          <PreparationSteps steps={recipe.instructions} />
-          
-          <div className="mt-8">
-            {/* Nutrition */}
-            <NutritionInfo nutrients={recipe.nutrients} servingRatio={servingRatio} />
+          {/* Preparation Steps */}
+          <div className="bg-white rounded-2xl shadow p-6 mb-8">
+            <PreparationSteps steps={recipe.instructions} />
           </div>
-          
-          {/* Upgrade CTA for free users */}
-          {/* Premium upgrade section removed for testing download functionality */}
-          
-          {/* Related Recipes */}
-          <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-100">
+
+          {/* Related Recipes - horizontal scroll */}
+          <div className="mt-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-5">You Might Also Like</h2>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white transition-colors">
-                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c" alt="Recipe" className="w-16 h-16 object-cover rounded-lg" />
-                <div>
-                  <h3 className="font-medium text-gray-900">Mediterranean Quinoa Bowl</h3>
-                  <p className="text-sm text-gray-500">Vegetarian • 35 min</p>
-                </div>
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              <div className="flex-shrink-0 w-64 bg-white rounded-xl shadow p-3 hover:bg-gray-50 transition-colors">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c" alt="Recipe" className="w-full h-32 object-cover rounded-lg mb-3" />
+                <h3 className="font-medium text-gray-900">Mediterranean Quinoa Bowl</h3>
+                <p className="text-sm text-gray-500">Vegetarian • 35 min</p>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white transition-colors">
-                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641" alt="Recipe" className="w-16 h-16 object-cover rounded-lg" />
-                <div>
-                  <h3 className="font-medium text-gray-900">Chicken Tikka Masala</h3>
-                  <p className="text-sm text-gray-500">Indian • 70 min</p>
-                </div>
+              <div className="flex-shrink-0 w-64 bg-white rounded-xl shadow p-3 hover:bg-gray-50 transition-colors">
+                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641" alt="Recipe" className="w-full h-32 object-cover rounded-lg mb-3" />
+                <h3 className="font-medium text-gray-900">Chicken Tikka Masala</h3>
+                <p className="text-sm text-gray-500">Indian • 70 min</p>
               </div>
+              {/* Add more related recipes here */}
             </div>
             <button className="mt-4 w-full py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-white transition-colors text-sm">
               View More Recipes
             </button>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
