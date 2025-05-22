@@ -22,8 +22,8 @@ export default function Sidebar({ isMobileOpen, setIsMobileOpen }: {
       
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 z-30  w-72 transition-all duration-300 ease-in-out bg-white border-r border-gray-100
-        lg:translate-x-0 lg:static  lg:z-0
+        fixed top-0 left-0 z-30 h-full w-full lg:w-72 transition-all duration-300 ease-in-out bg-white border-r border-gray-100
+        lg:translate-x-0 lg:static lg:z-0
         ${isMobileOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full lg:shadow-none'}
       `}>
         <div className="h-full flex flex-col">

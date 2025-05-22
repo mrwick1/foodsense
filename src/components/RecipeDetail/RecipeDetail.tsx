@@ -167,12 +167,12 @@ Date: ${new Date().toLocaleDateString()}
     );
   }
 
-  const servingRatio = servings / 4; // Assuming base recipe is for 4 servings
+  const servingRatio = servings / 4; 
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-8">
+    <div className="bg-gray-50 min-h-screen">
       {/* Breadcrumb */}
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2">
+      <nav className="mx-auto mb-2 py-4 pt-6">
         <ol className="flex items-center space-x-2 text-sm text-gray-500 overflow-hidden">
           <li>
             <Link to="/" className="hover:text-gray-900 transition-colors flex items-center">
@@ -259,7 +259,7 @@ Date: ${new Date().toLocaleDateString()}
       </div>
 
       {/* Main Content Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-6 lg:gap-10 min-w-0">
+      <div className="mx-auto  flex flex-col lg:flex-row gap-6 lg:gap-10 min-w-0">
         {/* Sticky Sidebar (Ingredients & Nutrition) */}
         <aside className="lg:w-1/3 w-full flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-24 self-start min-w-0">
           <div className="bg-white rounded-2xl shadow p-4 sm:p-6 mb-6">
