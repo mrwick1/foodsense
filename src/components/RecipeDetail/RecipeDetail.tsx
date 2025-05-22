@@ -171,15 +171,31 @@ Date: ${new Date().toLocaleDateString()}
 
   return (
     <div className="bg-gray-50 min-h-screen pt-8">
+      {/* Breadcrumb */}
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2">
+        <ol className="flex items-center space-x-2 text-sm text-gray-500 overflow-hidden">
+          <li>
+            <Link to="/" className="hover:text-gray-900 transition-colors flex items-center">
+              <span>Recipes</span>
+            </Link>
+          </li>
+          <li>
+            <span className="text-gray-400">/</span>
+          </li>
+          <li className="font-medium text-gray-900 truncate">{recipe.name}</li>
+        </ol>
+      </nav>
+
       {/* Hero Section */}
-      <div className="relative w-full h-[340px] md:h-[420px] lg:h-[480px] overflow-hidden mb-10">
+      <div className="relative w-full h-[220px] sm:h-[300px] md:h-[420px] lg:h-[480px] overflow-hidden mb-6 sm:mb-10">
         <img 
           src={recipe.image} 
           alt={recipe.name}
           className="w-full h-full object-cover object-center rounded-lg"
+          style={{maxHeight: '100%', minHeight: '100px'}}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-lg" />
-        <div className="absolute left-0 bottom-0 p-8 w-full flex flex-col md:flex-row md:items-end md:justify-between">
+        <div className="absolute left-0 bottom-0 p-4 sm:p-8 w-full flex flex-col md:flex-row md:items-end md:justify-between">
           <div>
             {recipe.tags.length > 0 && (
               <div className="mb-4">
@@ -188,8 +204,8 @@ Date: ${new Date().toLocaleDateString()}
                 </span>
               </div>
             )}
-            <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow mb-2">{recipe.name}</h1>
-            <p className="text-white/90 text-lg max-w-2xl drop-shadow mb-4">{recipe.description}</p>
+            <h1 className="font-bold text-white drop-shadow mb-2 text-xl sm:text-2xl md:text-3xl lg:text-4xl break-words">{recipe.name}</h1>
+            <p className="text-white/90 drop-shadow mb-4 text-sm sm:text-base md:text-lg max-w-full break-words">{recipe.description}</p>
           </div>
           <div className="flex space-x-2 mt-4 md:mt-0">
             <button 
@@ -243,10 +259,10 @@ Date: ${new Date().toLocaleDateString()}
       </div>
 
       {/* Main Content Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-6 lg:gap-10 min-w-0">
         {/* Sticky Sidebar (Ingredients & Nutrition) */}
-        <aside className="lg:w-1/3 w-full flex-shrink-0 mb-10 lg:mb-0 lg:sticky lg:top-24 self-start">
-          <div className="bg-white rounded-2xl shadow p-6 mb-6">
+        <aside className="lg:w-1/3 w-full flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-24 self-start min-w-0">
+          <div className="bg-white rounded-2xl shadow p-4 sm:p-6 mb-6">
             <IngredientsList 
               ingredients={recipe.ingredients} 
               servingRatio={servingRatio}
@@ -254,15 +270,15 @@ Date: ${new Date().toLocaleDateString()}
               onToggleCheck={toggleIngredientCheck}
             />
           </div>
-          <div className="bg-white rounded-2xl shadow p-6">
+          <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
             <NutritionInfo nutrients={recipe.nutrients} servingRatio={servingRatio} />
           </div>
         </aside>
 
         {/* Main Section (Steps, Info, etc.) */}
-        <section className="flex-1 min-w-0">
+        <section className="flex-1 min-w-0 flex flex-col">
           {/* Info Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:mb-8">
             <div className="bg-gray-50 p-4 rounded-xl flex items-center group">
               <div className="bg-white rounded-full p-2.5 mr-4 text-gray-500 border border-gray-100 shadow-sm">
                 <Clock className="w-5 h-5" />
@@ -314,27 +330,27 @@ Date: ${new Date().toLocaleDateString()}
           </div>
 
           {/* Preparation Steps */}
-          <div className="bg-white rounded-2xl shadow p-6 mb-8">
+          <div className="bg-white rounded-2xl shadow p-4 sm:p-6 mb-6 sm:mb-8">
             <PreparationSteps steps={recipe.instructions} />
           </div>
 
           {/* Related Recipes - horizontal scroll */}
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-5">You Might Also Like</h2>
-            <div className="flex gap-4 overflow-x-auto pb-2">
-              <div className="flex-shrink-0 w-64 bg-white rounded-xl shadow p-3 hover:bg-gray-50 transition-colors">
-                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c" alt="Recipe" className="w-full h-32 object-cover rounded-lg mb-3" />
-                <h3 className="font-medium text-gray-900">Mediterranean Quinoa Bowl</h3>
-                <p className="text-sm text-gray-500">Vegetarian • 35 min</p>
+          <div className="mt-6 sm:mt-8">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">You Might Also Like</h2>
+            <div className="flex gap-4 overflow-x-auto pb-2 -mx-2 px-2">
+              <div className="flex-shrink-0 w-56 sm:w-64 bg-white rounded-xl shadow p-3 hover:bg-gray-50 transition-colors">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c" alt="Recipe" className="w-full h-24 sm:h-32 object-cover rounded-lg mb-2 sm:mb-3" />
+                <h3 className="font-medium text-gray-900 text-sm sm:text-base">Mediterranean Quinoa Bowl</h3>
+                <p className="text-xs sm:text-sm text-gray-500">Vegetarian • 35 min</p>
               </div>
-              <div className="flex-shrink-0 w-64 bg-white rounded-xl shadow p-3 hover:bg-gray-50 transition-colors">
-                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641" alt="Recipe" className="w-full h-32 object-cover rounded-lg mb-3" />
-                <h3 className="font-medium text-gray-900">Chicken Tikka Masala</h3>
-                <p className="text-sm text-gray-500">Indian • 70 min</p>
+              <div className="flex-shrink-0 w-56 sm:w-64 bg-white rounded-xl shadow p-3 hover:bg-gray-50 transition-colors">
+                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641" alt="Recipe" className="w-full h-24 sm:h-32 object-cover rounded-lg mb-2 sm:mb-3" />
+                <h3 className="font-medium text-gray-900 text-sm sm:text-base">Chicken Tikka Masala</h3>
+                <p className="text-xs sm:text-sm text-gray-500">Indian • 70 min</p>
               </div>
               {/* Add more related recipes here */}
             </div>
-            <button className="mt-4 w-full py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-white transition-colors text-sm">
+            <button className="mt-3 sm:mt-4 w-full py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-white transition-colors text-xs sm:text-sm">
               View More Recipes
             </button>
           </div>
