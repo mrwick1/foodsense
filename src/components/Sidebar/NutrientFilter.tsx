@@ -1,6 +1,6 @@
 import { useFilter } from '../../context/FilterContext';
 import { nutrientRanges } from '../../data/mockRecipes';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Dumbbell } from 'lucide-react';
 
 export default function NutrientFilter() {
@@ -14,6 +14,8 @@ export default function NutrientFilter() {
   };
 
   const [localFilters, setLocalFilters] = useState(initialLocalFilters);
+  const [activeThumb, setActiveThumb] = useState<{ nutrient: keyof typeof localFilters; type: 'min' | 'max' } | null>(null);
+  const sliderRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
     setLocalFilters({
@@ -24,22 +26,33 @@ export default function NutrientFilter() {
     });
   }, [filters.nutrients.calories, filters.nutrients.protein, filters.nutrients.carbs, filters.nutrients.fat]);
 
-  const handleNutrientChange = (
-    nutrient: keyof typeof localFilters,
-    type: 'min' | 'max',
-    value: number
-  ) => {
+  const handleMouseDown = (e: React.MouseEvent, nutrient: keyof typeof localFilters, type: 'min' | 'max') => {
+    e.preventDefault();
+    setActiveThumb({ nutrient, type });
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!activeThumb || !sliderRefs.current[activeThumb.nutrient]) return;
+
+    const slider = sliderRefs.current[activeThumb.nutrient]!;
+    const rect = slider.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    
+    const absoluteMin = nutrientRanges[activeThumb.nutrient].min;
+    const absoluteMax = nutrientRanges[activeThumb.nutrient].max;
+    const range = absoluteMax - absoluteMin;
+    const value = Math.round(absoluteMin + x * range);
+
     setLocalFilters(prev => {
+      const { nutrient, type } = activeThumb;
       let newMinValue = prev[nutrient].min;
       let newMaxValue = prev[nutrient].max;
-      const absoluteMin = nutrientRanges[nutrient].min;
-      const absoluteMax = nutrientRanges[nutrient].max;
 
       if (type === 'min') {
-        newMinValue = Math.max(absoluteMin, Number(value));
+        newMinValue = Math.max(absoluteMin, value);
         newMinValue = Math.min(newMinValue, prev[nutrient].max);
       } else { // type === 'max'
-        newMaxValue = Math.min(absoluteMax, Number(value));
+        newMaxValue = Math.min(absoluteMax, value);
         newMaxValue = Math.max(newMaxValue, prev[nutrient].min);
       }
 
@@ -53,61 +66,81 @@ export default function NutrientFilter() {
     });
   };
 
-  const applyNutrientFilter = (nutrient: keyof typeof localFilters) => {
-    const minToApply = Math.min(localFilters[nutrient].min, localFilters[nutrient].max);
-    const maxToApply = Math.max(localFilters[nutrient].min, localFilters[nutrient].max);
-    setNutrientFilter(nutrient, minToApply, maxToApply);
+  useEffect(() => {
+    if (activeThumb) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [activeThumb, localFilters]);
+
+  const handleMouseUp = () => {
+    if (activeThumb) {
+      const { nutrient } = activeThumb;
+      const minToApply = Math.min(localFilters[nutrient].min, localFilters[nutrient].max);
+      const maxToApply = Math.max(localFilters[nutrient].min, localFilters[nutrient].max);
+      setNutrientFilter(nutrient, minToApply, maxToApply);
+      setActiveThumb(null);
+    }
   };
 
-  // Updated sliderClassName for new colors
-  const sliderClassName = "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600 " +
-    "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-slate-700 [&::-webkit-slider-thumb]:shadow dark:[&::-webkit-slider-thumb]:bg-slate-500 [&::-webkit-slider-thumb]:transition-colors [&::-webkit-slider-thumb]:hover:bg-slate-600 dark:[&::-webkit-slider-thumb]:hover:bg-slate-400 " +
-    "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-slate-700 [&::-moz-range-thumb]:shadow dark:[&::-moz-range-thumb]:bg-slate-500 [&::-moz-range-thumb]:transition-colors [&::-moz-range-thumb]:hover:bg-slate-600 dark:[&::-moz-range-thumb]:hover:bg-slate-400";
-
+  const getThumbPosition = (nutrient: keyof typeof localFilters, type: 'min' | 'max') => {
+    const absoluteMin = nutrientRanges[nutrient].min;
+    const absoluteMax = nutrientRanges[nutrient].max;
+    const range = absoluteMax - absoluteMin;
+    const value = type === 'min' ? localFilters[nutrient].min : localFilters[nutrient].max;
+    return ((value - absoluteMin) / range) * 100;
+  };
 
   return (
     <div>
       <div className="flex items-center mb-4">
-        <Dumbbell className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" /> {/* Slightly more muted icon */}
-        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Nutrients</h3> {/* Title text color */}
+        <Dumbbell className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500" />
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Nutrients</h3>
       </div>
 
       <div className="space-y-5">
         {(Object.keys(localFilters) as Array<keyof typeof localFilters>).map((nutrient) => (
           <div key={nutrient}>
             <div className="flex justify-between items-center mb-2">
-              <label htmlFor={`${nutrient}-min-slider`} className="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize"> {/* Nutrient name color */}
+              <label className="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">
                 {nutrient}
               </label>
-              <span className="text-xs font-medium text-slate-600 dark:text-slate-400 tabular-nums"> {/* Value range color */}
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-400 tabular-nums">
                 {localFilters[nutrient].min} - {localFilters[nutrient].max}
               </span>
             </div>
             
-            <input
-              id={`${nutrient}-min-slider`}
-              type="range"
-              aria-label={`${nutrient} minimum value`}
-              min={nutrientRanges[nutrient].min}
-              max={localFilters[nutrient].max} 
-              value={localFilters[nutrient].min}
-              onChange={(e) => handleNutrientChange(nutrient, 'min', Number(e.target.value))}
-              onMouseUp={() => applyNutrientFilter(nutrient)}
-              onTouchEnd={() => applyNutrientFilter(nutrient)}
-              className={sliderClassName + " mb-2"}
-            />
-            
-            <input
-              type="range"
-              aria-label={`${nutrient} maximum value`}
-              min={localFilters[nutrient].min}
-              max={nutrientRanges[nutrient].max}
-              value={localFilters[nutrient].max}
-              onChange={(e) => handleNutrientChange(nutrient, 'max', Number(e.target.value))}
-              onMouseUp={() => applyNutrientFilter(nutrient)}
-              onTouchEnd={() => applyNutrientFilter(nutrient)}
-              className={sliderClassName}
-            />
+            <div 
+              ref={el => { sliderRefs.current[nutrient] = el }}
+              className="relative h-2 bg-gray-200 rounded-lg dark:bg-gray-600"
+            >
+              {/* Selected range track */}
+              <div 
+                className="absolute h-full bg-slate-400 dark:bg-slate-500 rounded-lg"
+                style={{
+                  left: `${getThumbPosition(nutrient, 'min')}%`,
+                  right: `${100 - getThumbPosition(nutrient, 'max')}%`
+                }}
+              />
+              
+              {/* Min thumb */}
+              <div
+                className="absolute w-4 h-4 -mt-1 bg-slate-700 dark:bg-slate-500 rounded-full shadow cursor-pointer hover:bg-slate-600 dark:hover:bg-slate-400 transition-colors"
+                style={{ left: `${getThumbPosition(nutrient, 'min')}%` }}
+                onMouseDown={(e) => handleMouseDown(e, nutrient, 'min')}
+              />
+              
+              {/* Max thumb */}
+              <div
+                className="absolute w-4 h-4 -mt-1 bg-slate-700 dark:bg-slate-500 rounded-full shadow cursor-pointer hover:bg-slate-600 dark:hover:bg-slate-400 transition-colors"
+                style={{ left: `${getThumbPosition(nutrient, 'max')}%` }}
+                onMouseDown={(e) => handleMouseDown(e, nutrient, 'max')}
+              />
+            </div>
           </div>
         ))}
       </div>
