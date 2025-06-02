@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Bookmark, BookmarkCheck, ChefHat, Clock, Download, Egg, FileDown, Minus, PenLine, Plus } from 'lucide-react';
 import { recipes } from '../../data/mockRecipes';
-import { Recipe } from '../../types/recipe';
+import type { Recipe } from '../../types/recipe';
 import NutritionInfo from './NutritionInfo';
 import PreparationSteps from './PreperationSteps';
 import IngredientsList from './IngredientList';
@@ -85,40 +85,33 @@ Date: ${new Date().toLocaleDateString()}
   const handleDownload = (e: React.MouseEvent, all = false) => {
     e.preventDefault();
     
-    if (!isPremium) {
-      alert('Please upgrade to download recipes');
+    if (all) { // Handle "Download All Recipes" button
+      if (!isPremium) { // Keep premium check for "all"
+        alert('Please upgrade to download all recipes');
+        return;
+      }
+      alert('Downloading all recipes feature coming soon!'); // Existing logic
       return;
     }
     
-    if (all) {
-      alert('Downloading all recipes feature coming soon!');
-      return;
-    }
-    
+    // This is for the single recipe download (Download icon)
+    // This download will now serve the dummy.pdf and is always enabled.
     if (recipe) {
-      // Generate recipe text content
-      const recipeText = generateRecipeText(recipe);
-      
-      // Create a Blob with the text content
-      const blob = new Blob([recipeText], { type: 'text/plain' });
-      
-      // Create a URL for the Blob
-      const url = URL.createObjectURL(blob);
-      
-      // Create a temporary anchor element
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `${recipe.name.replace(/\s+/g, '-').toLowerCase()}-recipe.txt`;
-      
-      // Append to body, click to download, then remove
+      a.href = '/dummy.pdf'; // Path to the dummy PDF in the public folder
+      // Use recipe name for the downloaded file if recipe is available
+      a.download = `${recipe.name.replace(/\s+/g, '-').toLowerCase()}-recipe.pdf`; 
       document.body.appendChild(a);
       a.click();
-      
-      // Clean up
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
+      document.body.removeChild(a); // Clean up immediately
+    } else {
+      // Fallback if recipe is null
+      const a = document.createElement('a');
+      a.href = '/dummy.pdf';
+      a.download = 'recipe.pdf'; // Generic name
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   };
 
@@ -134,16 +127,16 @@ Date: ${new Date().toLocaleDateString()}
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex justify-center">
         <div className="animate-pulse flex flex-col w-full">
-          <div className="h-64 bg-gray-100 rounded-lg mb-6"></div>
-          <div className="h-10 bg-gray-100 rounded-lg w-3/4 mb-4"></div>
-          <div className="h-4 bg-gray-100 rounded-lg w-full mb-6"></div>
+          <div className="h-64 bg-gray-100 rounded-lg mb-6" />
+          <div className="h-10 bg-gray-100 rounded-lg w-3/4 mb-4" />
+          <div className="h-4 bg-gray-100 rounded-lg w-full mb-6" />
           <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="h-8 bg-gray-100 rounded-lg"></div>
-            <div className="h-8 bg-gray-100 rounded-lg"></div>
-            <div className="h-8 bg-gray-100 rounded-lg"></div>
+            <div className="h-8 bg-gray-100 rounded-lg" />
+            <div className="h-8 bg-gray-100 rounded-lg" />
+            <div className="h-8 bg-gray-100 rounded-lg" />
           </div>
-          <div className="h-64 bg-gray-100 rounded-lg mb-6"></div>
-          <div className="h-64 bg-gray-100 rounded-lg"></div>
+          <div className="h-64 bg-gray-100 rounded-lg mb-6" />
+          <div className="h-64 bg-gray-100 rounded-lg" />
         </div>
       </div>
     );
@@ -209,6 +202,7 @@ Date: ${new Date().toLocaleDateString()}
           </div>
           <div className="flex space-x-2 mt-4 md:mt-0">
             <button 
+              type="button"
               onClick={toggleBookmark}
               className={`p-2 rounded-full transition-all ${
                 isBookmarked 
@@ -224,18 +218,16 @@ Date: ${new Date().toLocaleDateString()}
               )}
             </button>
             <button 
+              type="button"
               onClick={(e) => handleDownload(e)}
-              className={`p-2 rounded-full transition-all ${
-                isPremium 
-                  ? 'bg-white/90 text-gray-900' 
-                  : 'text-white/70 cursor-not-allowed'
-              }`}
-              title={isPremium ? "Download Recipe" : "Upgrade to Download Recipe"}
-              disabled={!isPremium}
+              className={"p-2 rounded-full transition-all  text-white hover:bg-white/20"} // Always enabled style
+              title={"Download Recipe PDF"}
+              // disabled={!isPremium} // Removed disabled state
             >
               <Download className="w-5 h-5" />
             </button>
             <button 
+              type="button"
               onClick={(e) => handleDownload(e, true)}
               className={`p-2 rounded-full transition-all ${
                 isPremium 
@@ -309,6 +301,7 @@ Date: ${new Date().toLocaleDateString()}
               </div>
               <div className="flex items-center">
                 <button 
+                  type="button"
                   onClick={() => handleServingChange(-1)}
                   className={`p-1.5 rounded-full ${
                     servings <= 1 
@@ -320,6 +313,7 @@ Date: ${new Date().toLocaleDateString()}
                   <Minus className="w-4 h-4" />
                 </button>
                 <button 
+                  type="button"
                   onClick={() => handleServingChange(1)}
                   className="p-1.5 rounded-full hover:bg-white hover:shadow-sm text-gray-500 ml-1"
                 >
@@ -350,7 +344,7 @@ Date: ${new Date().toLocaleDateString()}
               </div>
               {/* Add more related recipes here */}
             </div>
-            <button className="mt-3 sm:mt-4 w-full py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-white transition-colors text-xs sm:text-sm">
+            <button type="button" className="mt-3 sm:mt-4 w-full py-2 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-white transition-colors text-xs sm:text-sm">
               View More Recipes
             </button>
           </div>
