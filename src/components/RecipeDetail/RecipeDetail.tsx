@@ -48,40 +48,6 @@ export default function RecipeDetail() {
     // In a real app, this would save to user's profile
   };
 
-  const generateRecipeText = (recipe: Recipe): string => {
-    // Create a well-formatted text document with all recipe details
-    const recipeText = `
-# ${recipe.name}
-
-${recipe.description}
-
-## Tags
-${recipe.tags.join(', ')}
-
-## Nutrition Information
-- Calories: ${recipe.nutrients.calories}
-- Protein: ${recipe.nutrients.protein}g
-- Carbohydrates: ${recipe.nutrients.carbs}g
-- Fat: ${recipe.nutrients.fat}g
-
-## Prep & Cook Time
-- Preparation: ${recipe.prepTime} minutes
-- Cooking: ${recipe.cookTime} minutes
-- Total Time: ${recipe.prepTime + recipe.cookTime} minutes
-
-## Ingredients
-${recipe.ingredients.map(ingredient => `- ${ingredient}`).join('\n')}
-
-## Instructions
-${recipe.instructions.map((step, index) => `${index + 1}. ${step}`).join('\n')}
-
-## Downloaded from Recipe Rover
-Date: ${new Date().toLocaleDateString()}
-    `.trim();
-    
-    return recipeText;
-  };
-
   const handleDownload = (e: React.MouseEvent, all = false) => {
     e.preventDefault();
     
