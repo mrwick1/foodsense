@@ -180,7 +180,7 @@ export default function RecipeDetail() {
     yPos += sectionGap / 2;
 
     // --- Ingredients --- 
-    doc.setFillColor(lightGray);
+    doc.setFillColor(lightGray, lightGray, lightGray);
     doc.roundedRect(margin, yPos, contentWidth, lineHeight * 2.5, 3, 3, 'F');
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
@@ -201,7 +201,7 @@ export default function RecipeDetail() {
     yPos += sectionGap;
 
     // --- Instructions --- 
-    doc.setFillColor(lightGray);
+    doc.setFillColor(lightGray, lightGray, lightGray);
     doc.roundedRect(margin, yPos, contentWidth, lineHeight * 2.5, 3, 3, 'F');
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
