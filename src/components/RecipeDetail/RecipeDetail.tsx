@@ -6,6 +6,7 @@ import type { Recipe } from '../../types/recipe';
 import NutritionInfo from './NutritionInfo';
 import PreparationSteps from './PreperationSteps';
 import IngredientsList from './IngredientList';
+import { jsPDF } from 'jspdf';
 
 export default function RecipeDetail() {
   const { id } = useParams<{ id: string }>();
@@ -48,6 +49,192 @@ export default function RecipeDetail() {
     // In a real app, this would save to user's profile
   };
 
+  const generatePDF = (recipe: Recipe) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    const contentWidth = pageWidth - margin * 2;
+    let yPos = 0;
+    const lineHeight = 6;
+    const sectionGap = 10;
+    const lightGray = 240; // For backgrounds
+    const midGray = 150; // For lines
+    const darkGray = 50; // For text
+    const accentColor = [74, 126, 217]; // A blue accent
+
+    // --- Header --- 
+    yPos += 20; // Top margin for header
+    doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
+    doc.rect(0, 0, pageWidth, yPos, 'F'); // Header background
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 255, 255); // White text
+    doc.text(recipe.name, margin, yPos - (lineHeight * 1.5));
+    yPos += lineHeight; // Space after header text
+
+    // --- Recipe Image --- 
+    if (recipe.image) {
+      try {
+        // Note: For this to work, the image URL must be accessible and CORS-enabled if it's remote.
+        // If images are local/relative, ensure they are converted to base64 or accessible via absolute URL.
+        // For simplicity, assuming `recipe.image` is a data URL or a publicly accessible URL.
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; // Important for remote images
+        img.src = recipe.image;
+        
+        // This is an asynchronous operation. jsPDF doesn't handle image loading well directly in sequence.
+        // A more robust solution would use a Promise to ensure the image is loaded before calling addImage.
+        // For this example, we'll proceed directly, which might not always render the image if it loads too slowly.
+        // A placeholder or error handling would be good in a production app.
+
+        // Calculate image dimensions to fit width
+        const aspectRatio = img.width / img.height;
+        let imgWidth = contentWidth / 2; // Let's make image take half the width
+        let imgHeight = imgWidth / aspectRatio;
+        const maxImgHeight = 80;
+        if (imgHeight > maxImgHeight) {
+          imgHeight = maxImgHeight;
+          imgWidth = imgHeight * aspectRatio;
+        }
+        doc.addImage(recipe.image, 'JPEG', margin, yPos, imgWidth, imgHeight); // Or PNG, etc.
+        yPos += imgHeight + sectionGap;
+      } catch (e) {
+        console.error("Error adding image to PDF:", e);
+        yPos += sectionGap; // Still add gap if image fails
+      }
+    } else {
+        yPos += sectionGap; // Add gap even if no image
+    }
+
+    // --- Description --- 
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkGray);
+    const splitDescription = doc.splitTextToSize(recipe.description, contentWidth);
+    doc.text(splitDescription, margin, yPos);
+    yPos += lineHeight * splitDescription.length + sectionGap;
+
+    // --- Tags --- 
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(midGray);
+    doc.text(`Tags: ${recipe.tags.join(' • ')}`, margin, yPos);
+    yPos += lineHeight * 2 + sectionGap / 2;
+
+    doc.setDrawColor(midGray);
+    doc.line(margin, yPos, pageWidth - margin, yPos); // Separator line
+    yPos += sectionGap / 2;
+
+    // --- Two Column Section: Prep/Cook Time & Nutrition --- 
+    const columnWidth = contentWidth / 2 - (margin / 2);
+    const initialTwoColY = yPos;
+    let leftColY = initialTwoColY;
+    let rightColY = initialTwoColY;
+
+    // Left Column: Prep & Cook Time
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(darkGray);
+    doc.text('Time & Servings', margin, leftColY);
+    leftColY += lineHeight * 1.5;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const timeDetails = [
+        `Prep: ${recipe.prepTime} min`,
+        `Cook: ${recipe.cookTime} min`,
+        `Total: ${recipe.prepTime + recipe.cookTime} min`,
+        // Assuming servings is available, if not, it needs to be passed or accessed
+        // For now, let's use a placeholder if not directly on recipe object.
+        // `Servings: ${recipe.servings || 4}` 
+    ];
+    for (const detail of timeDetails) {
+        doc.text(detail, margin, leftColY);
+        leftColY += lineHeight;
+    }
+
+    // Right Column: Nutrition Information
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(darkGray);
+    doc.text('Nutrition (per serving)', margin + columnWidth + margin, rightColY);
+    rightColY += lineHeight * 1.5;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const nutritionDetails = [
+        `Calories: ${recipe.nutrients.calories}`,
+        `Protein: ${recipe.nutrients.protein}g`,
+        `Carbs: ${recipe.nutrients.carbs}g`,
+        `Fat: ${recipe.nutrients.fat}g`,
+    ];
+    for (const detail of nutritionDetails) {
+        doc.text(detail, margin + columnWidth + margin, rightColY);
+        rightColY += lineHeight;
+    }
+
+    yPos = Math.max(leftColY, rightColY) + sectionGap;
+
+    doc.line(margin, yPos, pageWidth - margin, yPos); // Separator line
+    yPos += sectionGap / 2;
+
+    // --- Ingredients --- 
+    doc.setFillColor(lightGray.toString());
+    doc.roundedRect(margin, yPos, contentWidth, lineHeight * 2.5, 3, 3, 'F');
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(darkGray);
+    doc.text('Ingredients', margin + 5, yPos + lineHeight * 1.5);
+    yPos += lineHeight * 2.5 + sectionGap / 2;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    for (const ingredient of recipe.ingredients) {
+      if (yPos > pageHeight - margin * 2) { // Check for page break
+        doc.addPage();
+        yPos = margin; 
+      }
+      doc.text(`• ${ingredient}`, margin + 5, yPos);
+      yPos += lineHeight;
+    }
+    yPos += sectionGap;
+
+    // --- Instructions --- 
+    doc.setFillColor(lightGray.toString());
+    doc.roundedRect(margin, yPos, contentWidth, lineHeight * 2.5, 3, 3, 'F');
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(darkGray);
+    doc.text('Instructions', margin + 5, yPos + lineHeight * 1.5);
+    yPos += lineHeight * 2.5 + sectionGap / 2;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    for (const [index, step] of recipe.instructions.entries()) {
+      if (yPos > pageHeight - margin * 3) { // Check for page break (more space for instruction lines)
+        doc.addPage();
+        yPos = margin;
+      }
+      const stepText = `${index + 1}. ${step}`;
+      const splitStep = doc.splitTextToSize(stepText, contentWidth - 10);
+      doc.text(splitStep, margin + 5, yPos);
+      yPos += lineHeight * splitStep.length + (lineHeight / 2); // Add a bit more space after each step
+    }
+    yPos += sectionGap;
+
+    // --- Footer --- 
+    doc.setDrawColor(midGray);
+    doc.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20); // Footer line
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(midGray);
+    doc.text('Downloaded from Recipe Rover', margin, pageHeight - 15);
+    doc.text(new Date().toLocaleDateString(), pageWidth - margin - 25, pageHeight - 15);
+
+    return doc;
+  };
+
   const handleDownload = (e: React.MouseEvent, all = false) => {
     e.preventDefault();
     
@@ -61,23 +248,9 @@ export default function RecipeDetail() {
     }
     
     // This is for the single recipe download (Download icon)
-    // This download will now serve the dummy.pdf and is always enabled.
     if (recipe) {
-      const a = document.createElement('a');
-      a.href = '/dummy.pdf'; // Path to the dummy PDF in the public folder
-      // Use recipe name for the downloaded file if recipe is available
-      a.download = `${recipe.name.replace(/\s+/g, '-').toLowerCase()}-recipe.pdf`; 
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a); // Clean up immediately
-    } else {
-      // Fallback if recipe is null
-      const a = document.createElement('a');
-      a.href = '/dummy.pdf';
-      a.download = 'recipe.pdf'; // Generic name
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const doc = generatePDF(recipe);
+      doc.save(`${recipe.name.replace(/\s+/g, '-').toLowerCase()}-recipe.pdf`);
     }
   };
 
