@@ -4,6 +4,7 @@ export interface Recipe {
   description: string;
   image: string;
   tags: string[];
+  category: string;
   ingredients: string[];
   nutrients: {
     calories: number;
@@ -18,6 +19,7 @@ export interface Recipe {
 
 export interface FilterState {
   tags: string[];
+  categories: string[];
   nutrients: {
     calories: { min: number; max: number };
     protein: { min: number; max: number };

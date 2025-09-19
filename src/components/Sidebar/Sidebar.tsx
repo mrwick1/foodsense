@@ -1,4 +1,5 @@
 import { FilterX, X } from 'lucide-react';
+import CategoryFilter from './CategoryFilter';
 import TagFilter from './TagFilter';
 import NutrientFilter from './NutrientFilter';
 import IngredientFilter from './IngredientFilter';
@@ -48,8 +49,9 @@ export default function Sidebar({ isMobileOpen, setIsMobileOpen }: {
           </div>
           
           {/* Content */}
-          <div className="flex-1 p-4">
+          <div className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-6">
+              <CategoryFilter />
               <TagFilter />
               <NutrientFilter />
               <IngredientFilter />

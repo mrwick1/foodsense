@@ -7,6 +7,7 @@ export const recipes: Recipe[] = [
     description: "A delicious and nutritious breakfast option featuring creamy avocado and perfectly poached eggs.",
     image: "https://images.unsplash.com/photo-1525351484163-7529414344d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80",
     tags: ["Breakfast", "Healthy", "Vegetarian"],
+    category: "Dairy and Egg Products",
     ingredients: ["avocado", "egg", "sourdough bread", "salt", "pepper", "red pepper flakes"],
     nutrients: {
       calories: 320,
@@ -30,6 +31,7 @@ export const recipes: Recipe[] = [
     description: "A protein-packed quinoa bowl with fresh vegetables and feta cheese inspired by Mediterranean flavors.",
     image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80",
     tags: ["Lunch", "Vegetarian", "Mediterranean"],
+    category: "Cereal Grains and Pasta",
     ingredients: ["quinoa", "cucumber", "cherry tomatoes", "red onion", "feta cheese", "olive oil", "lemon juice"],
     nutrients: {
       calories: 380,
@@ -53,6 +55,7 @@ export const recipes: Recipe[] = [
     description: "A classic Indian dish featuring tender chicken in a creamy, spiced tomato sauce.",
     image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
     tags: ["Dinner", "Indian", "Spicy"],
+    category: "Poultry Products",
     ingredients: ["chicken breast", "yogurt", "garam masala", "tomato sauce", "cream", "garlic", "ginger"],
     nutrients: {
       calories: 450,
@@ -76,6 +79,7 @@ export const recipes: Recipe[] = [
     description: "A refreshing and nutritious smoothie bowl topped with fresh fruits and granola.",
     image: "https://images.unsplash.com/photo-1494597564530-871f2b93ac55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2013&q=80",
     tags: ["Breakfast", "Vegan", "Healthy"],
+    category: "Fruits and Fruit Juices",
     ingredients: ["mixed berries", "banana", "almond milk", "granola", "chia seeds", "honey"],
     nutrients: {
       calories: 280,
@@ -98,6 +102,7 @@ export const recipes: Recipe[] = [
     description: "Flaky salmon fillet with colorful roasted vegetables and fresh herbs.",
     image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
     tags: ["Dinner", "Seafood", "Healthy"],
+    category: "Finfish and Shellfish Products",
     ingredients: ["salmon fillet", "bell peppers", "zucchini", "red onion", "olive oil", "lemon", "dill"],
     nutrients: {
       calories: 420,
@@ -121,6 +126,7 @@ export const recipes: Recipe[] = [
     description: "A quick and colorful vegetable stir fry with a savory sauce, perfect for weeknight dinners.",
     image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     tags: ["Dinner", "Vegan", "Asian"],
+    category: "Vegetables and Vegetable Products",
     ingredients: ["broccoli", "carrot", "bell pepper", "snap peas", "garlic", "soy sauce", "ginger"],
     nutrients: {
       calories: 220,
@@ -144,6 +150,7 @@ export const recipes: Recipe[] = [
     description: "A juicy homemade beef burger with all the traditional toppings on a toasted bun.",
     image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1899&q=80",
     tags: ["Lunch", "American", "Beef"],
+    category: "Beef Products",
     ingredients: ["ground beef", "burger bun", "lettuce", "tomato", "onion", "cheese", "ketchup", "mustard"],
     nutrients: {
       calories: 580,
@@ -167,6 +174,7 @@ export const recipes: Recipe[] = [
     description: "A creamy, chocolatey smoothie that tastes like dessert but is packed with nutrients.",
     image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1898&q=80",
     tags: ["Breakfast", "Vegetarian", "Sweet"],
+    category: "Beverages",
     ingredients: ["banana", "cocoa powder", "almond milk", "Greek yogurt", "honey", "ice"],
     nutrients: {
       calories: 250,
@@ -188,6 +196,7 @@ export const recipes: Recipe[] = [
     description: "A simple Italian salad with fresh tomatoes, mozzarella, and basil, drizzled with balsamic glaze.",
     image: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1972&q=80",
     tags: ["Appetizer", "Italian", "Vegetarian"],
+    category: "Cheese",
     ingredients: ["tomatoes", "fresh mozzarella", "fresh basil", "olive oil", "balsamic glaze", "salt", "pepper"],
     nutrients: {
       calories: 280,
@@ -211,6 +220,7 @@ export const recipes: Recipe[] = [
     description: "A creamy Italian rice dish with sautéed mushrooms, white wine, and Parmesan cheese.",
     image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     tags: ["Dinner", "Italian", "Vegetarian"],
+    category: "Cereal Grains and Pasta",
     ingredients: ["arborio rice", "mushrooms", "onion", "garlic", "white wine", "vegetable broth", "Parmesan cheese", "butter"],
     nutrients: {
       calories: 420,

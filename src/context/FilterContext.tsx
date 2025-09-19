@@ -4,6 +4,7 @@ import { nutrientRanges } from '../data/mockRecipes';
 
 const initialFilterState: FilterState = {
   tags: [],
+  categories: [],
   nutrients: {
     calories: { min: nutrientRanges.calories.min, max: nutrientRanges.calories.max },
     protein: { min: nutrientRanges.protein.min, max: nutrientRanges.protein.max },
@@ -18,6 +19,7 @@ const initialFilterState: FilterState = {
 type FilterContextType = {
   filters: FilterState;
   setTagFilter: (tags: string[]) => void;
+  setCategoryFilter: (categories: string[]) => void;
   setNutrientFilter: (nutrient: keyof FilterState['nutrients'], min: number, max: number) => void;
   setIncludedIngredients: (ingredients: string[]) => void;
   setExcludedIngredients: (ingredients: string[]) => void;
@@ -32,6 +34,10 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const setTagFilter = (tags: string[]) => {
     setFilters(prev => ({ ...prev, tags }));
+  };
+
+  const setCategoryFilter = (categories: string[]) => {
+    setFilters(prev => ({ ...prev, categories }));
   };
 
   const setNutrientFilter = (
@@ -69,6 +75,7 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
       value={{
         filters,
         setTagFilter,
+        setCategoryFilter,
         setNutrientFilter,
         setIncludedIngredients,
         setExcludedIngredients,

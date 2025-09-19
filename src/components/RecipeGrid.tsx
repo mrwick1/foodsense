@@ -27,9 +27,16 @@ export default function RecipeGrid() {
       );
     }
     
+    // Category filter
+    if (filters.categories.length > 0) {
+      result = result.filter(recipe =>
+        filters.categories.includes(recipe.category)
+      );
+    }
+
     // Tag filter
     if (filters.tags.length > 0) {
-      result = result.filter(recipe => 
+      result = result.filter(recipe =>
         filters.tags.some(tag => recipe.tags.includes(tag))
       );
     }
